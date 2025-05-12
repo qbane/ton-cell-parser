@@ -1,4 +1,4 @@
-import { Dictionary } from '@ton/core'
+import { Cell, Dictionary, Slice } from '@ton/core'
 
 interface ModifierDesc {
   skip: boolean
@@ -42,3 +42,7 @@ export type FieldDesc =
   | { type: void }  // a hack for unhandled types
 
 export { Infer } from './static'
+
+export declare function stringToCell(str: string, CellClass: typeof Cell): Cell
+export declare function decodeSlice(slice: Slice, fmt: string | FieldDesc[]): UnpackResult
+export declare function parseFormatString(str: string): FieldDesc[]

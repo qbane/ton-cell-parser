@@ -1,3 +1,4 @@
+/// <reference types="vitest/globals" />
 import { Parser } from '../src'
 
 describe('parser', () => {
