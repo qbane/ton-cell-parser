@@ -34,12 +34,12 @@ type MapMaybeSpecifier<X> =
   | { type: 'maybe', some: false }
   | { type: 'maybe', some: true, value : X })
 
-type MapDictSpecifier<K, V> =
+type MapDictSpecifier<K, V, D = false> =
   K extends [infer BitLength, infer KeyType] ? {
     type: 'dict',
     keyBits: BitLength,
     entries: [KeyType, V][]
-  } :
+  } & (D extends true ? {direct: true} : {}) :
   never
 
 type MapEitherSpecifier<X, Y> = X extends unknown ? (
@@ -48,6 +48,10 @@ type MapEitherSpecifier<X, Y> = X extends unknown ? (
   never
 
 type MapEitherIndirectSpecifier<X> = X extends unknown ? { type: 'either', side: 0 | 1, value: X } : never
+
+interface DumpObject {
+  leftover: string
+}
 
 // roll our own to maximize range support at 999 (type-fest dies at 250)
 type Multiply8<N extends number> = [
@@ -124,9 +128,11 @@ type ParseSpecifierInner<T extends string, Mods extends ModifierDesc = {}, Snum 
   T extends `v${'i' | 'u'}${infer R}` ? [MapVarIntSpecifier<Snum>, R] :
   T extends `C${infer R}` ? (Snum extends '' ? [bigint, R] : []) :
   T extends `s${infer R}` ? (Snum extends '' ? [string, R] : []) :
+  T extends `_${infer R}` ? (Snum extends '' ? [DumpObject, R] : []) :
 
   ParseSequence<T, ['(', {type: 'expr'}, ')']> extends
     [[infer X], infer R] ? [X, R] :
+
   ParseSequence<T, ['D{', {type: 'staticSpec'}, '}']> extends
     [[infer X], infer R] ? [MapDictSpecifier<X, []>, R] :
   ParseSequence<T, ['D{', {type: 'staticSpec'}, ',', {type: 'expr'}, '}']> extends
@@ -137,6 +143,16 @@ type ParseSpecifierInner<T extends string, Mods extends ModifierDesc = {}, Snum 
   ParseSequence<T, ['D{', {type: 'expr'}, '}']> extends
     [infer _, infer R] ? [never, R] :
   ParseSequence<T, ['D{', {type: 'expr'}, ',', {type: 'expr'}, '}']> extends
+    [infer _, infer R] ? [never, R] :
+
+  // FIXME: should make a concise construct to allow "D{ | D*{"
+  ParseSequence<T, ['D*{', {type: 'staticSpec'}, '}']> extends
+    [[infer X], infer R] ? [MapDictSpecifier<X, [], true>, R] :
+  ParseSequence<T, ['D*{', {type: 'staticSpec'}, ',', {type: 'expr'}, '}']> extends
+    [[infer X, infer Y], infer R] ? [MapDictSpecifier<X, Y, true>, R] :
+  ParseSequence<T, ['D*{', {type: 'expr'}, '}']> extends
+    [infer _, infer R] ? [never, R] :
+  ParseSequence<T, ['D*{', {type: 'expr'}, ',', {type: 'expr'}, '}']> extends
     [infer _, infer R] ? [never, R] :
 
   ParseSequence<T, ['E{', {type: 'expr'}, ',', {type: 'expr'}, '}']> extends

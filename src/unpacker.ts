@@ -84,7 +84,7 @@ export function decodeSlice(slice: Slice, fmt: string | FieldDesc[]): UnpackResu
       // you won't believe that TonCore has no built-in slice/builder value type...
       const vtype = { parse: slice => execute(slice, instr.valueParser) } as DictionaryValue<unknown>
       type TKey = typeof ktype extends DictionaryKey<infer K> ? K : never
-      const entries = Array.from(slice.loadDict<TKey, unknown>(ktype, vtype))
+      const entries = Array.from(slice[!instr.direct ? 'loadDict' : 'loadDictDirect']<TKey, unknown>(ktype, vtype))
 
       // okay I give up typing
       const keyStringifier: undefined | ((s: any) => string) = (() => {
@@ -95,13 +95,15 @@ export function decodeSlice(slice: Slice, fmt: string | FieldDesc[]): UnpackResu
         }
       })()
 
-      return {
+      const dict: any = {
         type: 'dict',
         keyBits: ktype.bits,
         entries: keyStringifier ? 
           entries.map(([k, v]) => [keyStringifier(k), v]) :
           entries
       }
+      if (instr.direct) dict.direct = true
+      return dict
     }
         
     case 'either': {

@@ -84,14 +84,19 @@ export function parseFormatString(str: string) {
     case 'E': {
       const posFmtStart = pos
       let id = str[pos++]
-      if (id == 'E' && str[pos] == '^') {
+
+      if (id == 'D' && str[pos] == '*') {
+        id = 'D*'
+        pos++
+      } else if (id == 'E' && str[pos] == '^') {
         id = 'E^'
         pos++
       }
-      const tt = ({ D: 'dict', E: 'either', 'E^': 'eitherIndirect' } as const)[id]!
+      const tt = ({ D: 'dict', 'D*': 'dictDirect', E: 'either', 'E^': 'eitherIndirect' } as const)[id]!
 
       if (str[pos] != '{') {
-        throw error(`Expected "{" immediately after "${id}"`, posFmtStart, pos)
+        const alt = id == 'D' ? '*' : '^'
+        throw error(`Expected "{" or "${alt}{" immediately after "${id}"`, posFmtStart, pos)
       }
       assertNoNum()
       return setSpecifierToken(pos + 1, tt)
@@ -165,7 +170,7 @@ export function parseFormatString(str: string) {
     throw error(`Unsupported key type "${id}"`)
   }
 
-  function parseDictDef(base: {}): FieldDesc {
+  function parseDictDef(base: {direct: boolean}): FieldDesc {
     const keyType = parseDictKeyTypeArg()
     let valueParser: FieldDesc[] = []
     if (accept(',')) {
@@ -209,8 +214,8 @@ export function parseFormatString(str: string) {
       } else {
         expect('specifier')
         const { id, ...specRest } = rest
-        if (id == 'dict') {
-          instr = parseDictDef(specRest)
+        if (id == 'dict' || id == 'dictDirect') {
+          instr = parseDictDef({...specRest, direct: id == 'dictDirect'})
         } else if (id == 'either') {
           instr = parseEitherDef(specRest)
         } else if (id == 'eitherIndirect') {

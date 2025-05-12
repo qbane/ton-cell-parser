@@ -7,7 +7,7 @@ interface ModifierDesc {
 }
 
 export type SpecifierID = 'int' | 'uint' | 'varint' | 'varuint' | 'bits' | 'bytes' |
-  'address' | 'boolean' | 'coins' | 'dict' | 'either' | 'eitherIndirect' | 'tail'
+  'address' | 'boolean' | 'coins' | 'dict' | 'dictDirect' | 'either' | 'eitherIndirect' | 'tail'
 
 export type Token =
   | { type: 'eof' }
@@ -36,7 +36,7 @@ export type FieldDesc =
   | { type: 'bytes', count: number }
   | { type: 'skip' | 'maybe' | 'ref', instr: FieldDesc }
   | { type: 'group', children: FieldDesc[] }
-  | { type: 'dict', keyType: DictKeyType, valueParser: FieldDesc[] }
+  | { type: 'dict', direct: boolean, keyType: DictKeyType, valueParser: FieldDesc[] }
   | { type: 'either', side0: FieldDesc[], side1: FieldDesc[] }
   | { type: 'eitherIndirect', content: FieldDesc[] }
   | { type: void }  // a hack for unhandled types

@@ -18,9 +18,9 @@ Comment: Java-style; Use `//` for line comments, `/*` .. `*/` for block comments
 Integral types:
 
 * "xx`b`" = xx bits, defaults to `1`; returns a `BitString`’s string repr.
-* "xx`c`" = xx bytes, defaults to `1`; returns a hex string
+* "xx`c`" = xx bytes, defaults to `1`; returns a hex string  \
   (technical: does not use `loadBuffer` under the hood because [`Uint8Array#toHex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toHex) is not popular enough)
-* "xx`i`"/"xx`u`" = xx bits as signed/unsigned int, defaults to `32`; returns a number or BigInt when ≥ `54` bits
+* "xx`i`"/"xx`u`" = xx bits as signed/unsigned int, defaults to `32`; returns a number or BigInt when ≥ `54` bits  \
   **XXX**: maybe add type-accurate variants
 * "xx`vi`"/"xx`vu`" = xx-bit-length-prefixed signed/unsigned int, xx is required; returns a number or BigInt when ≥ `3` bytes
 * `h`/`H` = 16-bit signed/unsigned integer (short; shortcut to `16i`/`16u`)
@@ -33,6 +33,7 @@ Other data types:
 * `B` = a single bit, but return the result as boolean
 * `(` ... `)` = parse into a sub-array; useful for grouping or acting as a placeholder
 * `D{`kkk&ensp;[ `,`vvv ]&ensp;`}` = dict with its key and value (optional) types respectively
+* `D*{`kkk&ensp;[ `,`vvv ]&ensp;`}` = dict direct; [see the implementation in @ton/core](https://github.com/ton-core/ton-core/blob/e0ed819973daf0484dfbacd0c30a0dcfe4714f8d/src/dict/Dictionary.ts#L260)
 * `E{`xxx`,`yyy`}` = either xxx (0-side) or yyy (1-side)
 * `E^{`xxx`}` = either xxx or (ref of xxx)
 

@@ -27,9 +27,23 @@ describe('static', () => {
       (new Array(40).fill(null) as BuildTuple<40, null>)
   })
 
+
   it('infers dicts', () => {
     assertType<Infer<'D{16i,}'>>([{
       type: 'dict',
+      keyBits: 16,
+      entries: [[1, []]],
+    }])
+
+    assertType<Infer<'D{16i}'>>([{
+      type: 'dict',
+      keyBits: 16,
+      entries: [[1, []]],
+    }])
+
+    assertType<Infer<'D*{16i,}'>>([{
+      type: 'dict',
+      direct: true,
       keyBits: 16,
       entries: [[1, []]],
     }])
