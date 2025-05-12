@@ -22,6 +22,6 @@ export class Parser<ParserOutput extends unknown[]> {
   }
 
   static create<T extends string>(source: T) {
-    return new Parser<Infer<T>>(parseFormatString(source))
+    return new Parser<string extends T ? unknown[] : Infer<T>>(parseFormatString(source))
   }
 }

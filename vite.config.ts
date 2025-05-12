@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig, coverageConfigDefaults } from 'vitest/config'
 
 export default defineConfig({
   plugins: [],
@@ -31,5 +31,8 @@ export default defineConfig({
     include: [
       'tests/**/*.test.(c|m)?[tj]s',
     ],
+    coverage: {
+      exclude: [...coverageConfigDefaults.exclude, 'src/index.ts'],
+    }
   },
 })

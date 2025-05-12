@@ -49,3 +49,35 @@ Modifiers: (Must follow this order, and immediately follows a type specifier)
 * “`?`xxx” = maybe xxx
 * “`^`xxx” = ref of xxx
 * **TODO** “`~(`xxx`)`” = spread the result of slice xxx (e.g., `X ~(YZ) W` -> `[x, y, z, w]`)
+
+## Tutorial
+
+Let's get started by parsing a real-world Jetton transfer message. Take this <a href="https://tonviewer.com/transaction/32767137c6670465b6db6f955705f605ff3198ed21b02b987a4f8652969c0005" target="_blank">Jettons transfer transaction</a> for example. You can see the **internal message** by clicking **Show details**, and then clicking **Copy Raw body** [sic], this copies the body cell as a hex string `b5ee9c72`...
+
+We are going to come up with a format string for decoding this message. According to the [message layout](https://docs.ton.org/v3/guidelines/dapps/asset-processing/jettons#message-layouts), or the [TL-B schema](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#internal-message-handlers), you can unpack it with the format string as follows:
+
+```java
+4c   // op code,              4 bytes; here we expect "0F8A7EA5"
+Q    // query_id,             aka uint64 or "64u"
+C    // amount,               coins
+A    // destination,          address
+?A   // response_destination, a "maybe-address" (empty in this case)
+?^() // custom_payload,       maybe-ref (also empty in this case)
+C    // forward_ton_amount,   coins
+```
+
+You can omit all whitespaces and comments, and just type `4cQCA?A?^()C`. This makes your format string more like a cryptic regular expression (so bad).
+
+### Going further
+
+You will notice that the data has not ended yet (if you add `$` at the end you will receive an error). The reason is that this message was meant for swapping on [STON.fi](https://ston.fi) and there was a `forward_payload` left to be parsed. Refer to the message layout it is of an `Either Cell ^Cell` type, but let us pretend that the parser does not know about an `Either` type.
+
+For a fixed message, we can dissect it by using the wire format nonetheless. *Append* the following:
+
+```java
+B       // pause here: observe what is parsed
+// ^()  // parse the referenced slice (placeholder)
+```
+
+The `B` takes a bit. In this case, it's `true` (or a `1` bit), which corresponds to the "right" side of the Either, indicating a `^Cell` follows. Type `^()` to extract the content. You can refer to STON.fi's [documentations](https://docs.ston.fi/document/developer-section/api-reference-v1/router#swap-0x25938561) to figure out a format string such like `4c A C A ?(A)` to be put between the parentheses. This completes the parsing.
+
