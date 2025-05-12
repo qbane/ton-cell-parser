@@ -199,7 +199,7 @@ export type ParseExpr<T extends string, Results extends unknown[] = []> =
   [Results, T]
 
 export type Infer<T extends string> =
-  ParseExpr<T> extends [infer X, infer R] ? (
-    R extends '' ? X : never
+  ParseExpr<T> extends [infer X, infer R extends string] ? (
+    Trim<R> extends '' ? X : never
   ) :
   never
