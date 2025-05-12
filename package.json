@@ -19,8 +19,7 @@
   },
   "files": [
     "dist",
-    "src/*.d.ts",
-    "tests"
+    "src/*.d.ts"
   ],
   "devDependencies": {
     "@types/node": "^22.15.17",
