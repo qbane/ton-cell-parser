@@ -24,27 +24,25 @@ describe('parser', () => {
     expect(values.unpacked).toHaveLength(14)
   })
 
-  it('parses Hipo treasury state', () => {
+  it('parses a Hipo treasury state field (dict direct)', () => {
     const pp = Parser.create(`D*{32u,4u16u
+      D{14c}
+      D{32c}
+      D{32c}
+      D{32c}
+      D{32c}
+      D{32c,  // staked
+      C8uCCC^(_)}
+      D{32c}
 
-D{14c}
-D{32c}
-D{32c}
-D{32c}
-D{32c}
-D{32c,  // staked
-C8uCCC^(_)}
-D{32c}
+      C
+      C
+      32c
 
-C
-C
-32c
+      32u  // stakeHeldFor
+      32u  // stakeHeldUntil
 
-32u  // stakeHeldFor
-32u  // stakeHeldUntil
-
-}
-`)
+      }`)
 
     const values = pp.unpack(`b5ee9c7201020401000108000171a068204f084000104e061abc0d8fbeaa05012727262d43ed76f2f4ea14db8952724e5347e7cb4ea86189056809688692400010000d0439efd0010177a01393699cfbc6ee7854bf20bedee5920725e1af3c293d110dbe15552b77c561ffea2540be40003ce044364c5bb0000dd75747d4beaaa545faeed8900201908a4f8d4c1fe92810fb8c0f4826e9df5601182b905f8afebc84b6046dbadff1ad68204f0800030000bdd152e9402b7265bb3d48bf1b0b1dae244487b02ffc050b41fff4c533e47d7e0300802795e4c7a25d9c4c6db289f1592425a4bc82ec0d262f898834abe5c20faf4d744d20aac2d3ca77fffa14936f6be59297ee1ba154bc69ba977ab91bf782ab2204`)
 

@@ -2,9 +2,13 @@ import { Dictionary } from '@ton/core'
 import type { Address, BitString, DictionaryKey, DictionaryValue, Slice } from '@ton/core'
 import { parseFormatString } from './fmtstr'
 
-import type { FieldDesc, UnpackResult } from './types'
+import type { FieldDesc, DecodeOptions, UnpackResult } from './types'
 
-export function decodeSlice(slice: Slice, fmt: string | FieldDesc[]): UnpackResult {
+export function decodeSlice(slice: Slice, fmt: string | FieldDesc[], options: DecodeOptions = {}): UnpackResult {
+  const {
+    DictionaryKeyClassMap = Dictionary.Keys,
+  } = options
+
   const errBrand = Symbol()
 
   function execute(slice: Slice, instrs: FieldDesc[]) {
@@ -80,7 +84,7 @@ export function decodeSlice(slice: Slice, fmt: string | FieldDesc[]): UnpackResu
 
     case 'dict': {
       const ctorName = instr.keyType.ctor
-      const ktype = Dictionary.Keys[ctorName](instr.keyType.arg)
+      const ktype = DictionaryKeyClassMap[ctorName](instr.keyType.arg)
       // you won't believe that TonCore has no built-in slice/builder value type...
       const vtype = { parse: slice => execute(slice, instr.valueParser) } as DictionaryValue<unknown>
       type TKey = typeof ktype extends DictionaryKey<infer K> ? K : never

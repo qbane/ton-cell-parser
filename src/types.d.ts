@@ -28,6 +28,12 @@ type _DictKeyType = { [k in keyof typeof Dictionary.Keys]:
     never) }
 export type DictKeyType = _DictKeyType[keyof _DictKeyType]
 
+interface _DecodeOptions {
+  DictionaryKeyClassMap: typeof Dictionary['Keys']
+}
+
+export type DecodeOptions = Partial<_DecodeOptions>
+
 export type FieldDesc =
   | { type: 'coins' | 'address' | '?address' | 'boolean' | 'tail' | 'endParse' | 'dump' }
   | { type: `${'' | 'u'}int`, bits: number }
@@ -44,5 +50,5 @@ export type FieldDesc =
 export { Infer } from './static'
 
 export declare function stringToCell(str: string, CellClass: typeof Cell): Cell
-export declare function decodeSlice(slice: Slice, fmt: string | FieldDesc[]): UnpackResult
+export declare function decodeSlice(slice: Slice, fmt: string | FieldDesc[], options: DecodeOptions): UnpackResult
 export declare function parseFormatString(str: string): FieldDesc[]
