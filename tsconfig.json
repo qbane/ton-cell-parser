@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2022"],
+    // "skipLibCheck": true,
+    "allowJs": true,
+    "checkJs": true,
+
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+
+    "strict": true,
+    "noUncheckedSideEffectImports": true,
+
+    "outDir": "dist",
+    "noEmit": true,
+    "tsBuildInfoFile": "node_modules/.tmp/ton-cell-parser.tsbuildinfo"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["tests/**/*", "**/*.test.*", "**/*.spec.*"]
+}

@@ -1,0 +1,36 @@
+{
+  "name": "@qbane/ton-cell-parser",
+  "description": "A flexible, type-aware TON cell parser",
+  "version": "0.0.1-beta.3",
+  "author": {
+    "name": "qbane",
+    "email": "andy0130tw@yahoo.com.tw"
+  },
+  "main": "dist/index.umd.cjs",
+  "module": "dist/index.js",
+  "types": "src/types.d.ts",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -b",
+    "vite-build": "vite build",
+    "build": "npm run typecheck && npm run vite-build",
+    "cli": "vite-node src/cli.ts",
+    "test": "vitest --typecheck"
+  },
+  "files": [
+    "dist",
+    "src/*.d.ts"
+  ],
+  "devDependencies": {
+    "@types/node": "^22.15.17",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-node": "^3.1.3",
+    "vitest": "^3.1.3"
+  },
+  "dependencies": {
+    "@ton/core": "^0.60.1",
+    "type-fest": "^4.41.0"
+  }
+}
