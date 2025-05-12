@@ -91,14 +91,14 @@ describe('parser', () => {
     ]
 
     // all three parsers can decode identical message (equivalent up to wire format)
-    const pp1 = Parser.create([...specifiers, 'B^(4c A C A ?(A))'].join('\n'))
+    const pp1 = Parser.create([...specifiers, '*B^(4c A C A ?(A))'].join('\n'))
     const pp2 = Parser.create([...specifiers, 'E{4c A C A ?(A), ^(4c A C A ?(A))}'].join('\n'))
     const pp3 = Parser.create([...specifiers, 'E^{4c A C A ?(A)}'].join('\n'))
 
     const msg = `b5ee9c7201010201008700016d0f8a7ea500039980ec45a82549af1b373800ef3b9902a271b2a01c8938a523cfe24e71847aaeb6a620001ed44a77ac0e709c1047868c03010095259385618002c9f5d041c47fdfd4f7093ef5c0048a17c407d2471c89752a15896db8f0c2e1e697d33100350f85f62fed343e8de83095933ceac4e0a2e79041368074a7d002efcc9e641f50`
     ;[pp1, pp2, pp3].forEach(pp => {
       const values = pp.unpack(msg)
-      expect(values.unpacked.length == 8)
+      expect(values.unpacked.length).toEqual(8)
     })
   })
 })
