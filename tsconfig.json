@@ -22,5 +22,5 @@
     "tsBuildInfoFile": "node_modules/.tmp/ton-cell-parser.tsbuildinfo"
   },
   "include": ["src/**/*"],
-  "exclude": ["tests/**/*", "**/*.test.*", "**/*.spec.*"]
+  "exclude": ["./vite.config.ts", "tests/**/*", "**/*.test.*", "**/*.spec.*"]
 }
