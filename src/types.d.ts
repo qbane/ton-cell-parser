@@ -49,6 +49,6 @@ export type FieldDesc =
 
 export { Infer } from './static'
 
-export declare function stringToCell(str: string, CellClass: typeof Cell): Cell
-export declare function decodeSlice(slice: Slice, fmt: string | FieldDesc[], options: DecodeOptions): UnpackResult
+export declare function stringToCell(str: string, CellClass?: typeof Cell): Cell
+export declare function decodeSlice(slice: Slice, fmt: string | FieldDesc[], options?: DecodeOptions): UnpackResult
 export declare function parseFormatString(str: string): FieldDesc[]
