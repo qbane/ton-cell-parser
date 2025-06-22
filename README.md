@@ -32,16 +32,17 @@ Other data types:
 * `A` = address (wire format `267b` but with format check -- use `?A` when it is nullable)
 * `B` = a single bit, but return the result as boolean
 * `(` ... `)` = parse into a sub-array; useful for grouping or acting as a placeholder
-* `D{`kkk&ensp;[ `,`vvv ]&ensp;`}` = dict with its key and value (optional) types respectively
-* `D*{`kkk&ensp;[ `,`vvv ]&ensp;`}` = dict direct; [see the implementation in @ton/core](https://github.com/ton-core/ton-core/blob/e0ed819973daf0484dfbacd0c30a0dcfe4714f8d/src/dict/Dictionary.ts#L260)
+* `D{`&ensp;kkk&ensp;[ `,`vvv ]&ensp;`}` = dict with its key and value (optional) types respectively
+* `D*{`&ensp;kkk&ensp;[ `,`vvv ]&ensp;`}` = dict direct; [see the implementation in @ton/core](https://github.com/ton-core/ton-core/blob/e0ed819973daf0484dfbacd0c30a0dcfe4714f8d/src/dict/Dictionary.ts#L260)
 * `E{`xxx`,`yyy`}` = either xxx (0-side) or yyy (1-side)
 * `E^{`xxx`}` = either xxx or (ref of xxx)
 
 Trailing:
 
 * `s` = parse the remaining bytes as a UTF-8 string tail; should be invoked at the end of a slice
-* “...`_`” = dump all the remaining bits as a bit string for debugging purposes
 * “...`$`” = assert the end of a slice (i.e., `endParse`, errs if there is remaining bits/refs to parse)
+* **DEBUG** “...`_`” = dump the current state of this slice for debugging purposes or further processing.  
+  **NOTE**: the object shape produced by this specifier is subject to change across versions.
 
 Modifiers: (Must follow this order, and immediately follows a type specifier)
 
@@ -80,4 +81,3 @@ B       // pause here: observe what is parsed
 ```
 
 The `B` takes a bit. In this case, it's `true` (or a `1` bit), which corresponds to the "right" side of the Either, indicating a `^Cell` follows. Type `^()` to extract the content. You can refer to STON.fi's [documentations](https://docs.ston.fi/document/developer-section/api-reference-v1/router#swap-0x25938561) to figure out a format string such like `4c A C A ?(A)` to be put between the parentheses. This completes the parsing.
-
