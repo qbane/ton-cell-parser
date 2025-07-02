@@ -58,13 +58,13 @@ export function decodeSlice(slice: Slice, fmt: string | FieldDesc[], options: De
       return instr.sizeBytes >= 3 ? slice.loadVarIntBig(instr.sizeBytes) : slice.loadVarInt(instr.sizeBytes)
     case 'varuint':
       return instr.sizeBytes >= 3 ? slice.loadVarUintBig(instr.sizeBytes) : slice.loadVarUint(instr.sizeBytes)
-        
+
     case 'skip':
       executeOne(slice, instr.instr)
       return undefined
     case 'maybe': {
       const some = slice.loadBit()
-      return some ? 
+      return some ?
         { type: 'maybe', some: true, value: executeOne(slice, instr.instr) } :
         { type: 'maybe', some: false }
     }
@@ -78,7 +78,7 @@ export function decodeSlice(slice: Slice, fmt: string | FieldDesc[], options: De
         return []
       }
     }
-        
+
     case 'group':
       return execute(slice, instr.children)
 
@@ -102,17 +102,17 @@ export function decodeSlice(slice: Slice, fmt: string | FieldDesc[], options: De
       const dict: any = {
         type: 'dict',
         keyBits: ktype.bits,
-        entries: keyStringifier ? 
+        entries: keyStringifier ?
           entries.map(([k, v]) => [keyStringifier(k), v]) :
           entries
       }
       if (instr.direct) dict.direct = true
       return dict
     }
-        
+
     case 'either': {
       const isSide1 = slice.loadBit()
-      return !isSide1 ? 
+      return !isSide1 ?
         { type: 'either', side: 0, value: execute(slice, instr.side0) } :
         { type: 'either', side: 1, value: execute(slice, instr.side1) }
     }
@@ -128,24 +128,29 @@ export function decodeSlice(slice: Slice, fmt: string | FieldDesc[], options: De
       }
       return { type: 'either', side: isIndirect ? 1 : 0, value }
     }
-        
+
     case 'tail':
       return slice.loadStringTail()
 
     case 'endParse':
       slice.endParse()
       return
-        
+
     case 'dump': {
       const { remainingBits, remainingRefs } = slice
+      const refs = []
+      while (slice.remainingRefs > 0) {
+        refs.push(slice.loadRef())
+      }
       return {
         remainingBits, remainingRefs,
         leftover: slice.loadBits(slice.remainingBits).toString(),
+        refs,
       }
     }
-        
+
     }
-    
+
     throw new Error(`Unknown FieldDesc type "${instr.type}"`)
   }
 
