@@ -47,7 +47,7 @@ export type FieldDesc =
   | { type: 'eitherIndirect', content: FieldDesc[] }
   | { type: void }  // a hack for unhandled types
 
-export { Infer } from './static'
+export type { Infer } from './static.d.ts'
 
 export declare function stringToCell(str: string, CellClass?: typeof Cell): Cell
 export declare function decodeSlice(slice: Slice, fmt: string | FieldDesc[], options?: DecodeOptions): UnpackResult

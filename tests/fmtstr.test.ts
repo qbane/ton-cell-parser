@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { parseFormatString as $ } from '../src/fmtstr'
+import { parseFormatString as $, getEmittedTokens } from '../src/fmtstr'
 
 describe('fmtstr', () => {
   it('parses a format string', () => {
@@ -121,5 +121,25 @@ describe('fmtstr', () => {
     expect(() => $('E^{()}')).not.toThrow()
     expect(() => $('E^{i,}')).toThrow()
     expect(() => $('E^{,i}')).toThrow()
+  })
+
+  it('produces a copied list of last emitted token', () => {
+    const [ee, rr, tlist] = getEmittedTokens(() => {
+      $('()')
+      return 123
+    })
+    expect(ee).toBe(null)
+    expect(rr).toBe(123)
+    expect(tlist).toHaveLength(2)
+  })
+
+  it('produces an incomplete list when parsing errors', () => {
+    const [ee, rr, tlist] = getEmittedTokens(() => {
+      $('(X)')
+      return 456
+    })
+    expect(ee).toHaveProperty('message', expect.stringContaining('Unexpected character'))
+    expect(rr).toBe(undefined)
+    expect(tlist).toHaveLength(1)
   })
 })

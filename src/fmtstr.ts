@@ -1,6 +1,30 @@
 import type { DictKeyType, FieldDesc, SpecifierID, Token } from './types'
 
-export const emittedTokens = [] as { pos: number, token: Token }[]
+type EmittedTokens = { pos: number, token: Token }[]
+
+let _saveEmittedTokens = false
+const _emittedTokens = [] as EmittedTokens
+
+export function getEmittedTokens<T>(cb: () => T): 
+  [unknown, undefined, EmittedTokens] | [null, T, EmittedTokens] {
+
+  _saveEmittedTokens = true
+  let result: T = undefined as any
+  let error
+  let tokens: EmittedTokens
+  try {
+    result = cb()
+  } catch (err) {
+    error = err
+  } finally {
+    tokens = _emittedTokens.slice()
+    _emittedTokens.length = 0
+    _saveEmittedTokens = false
+  } 
+  return error !== undefined ? 
+    [error as unknown, undefined, tokens] : 
+    [null, result, tokens]
+}
 
 class FormatStringParseError extends Error {
   constructor(
@@ -11,9 +35,6 @@ class FormatStringParseError extends Error {
 }
 
 export function parseFormatString(str: string) {
-  // intercept the lexer to pull out the token stream
-  emittedTokens.length = 0
-
   let pos = 0
   let token: Token = { type: 'eof' }
 
@@ -28,7 +49,8 @@ export function parseFormatString(str: string) {
   }
 
   function next() {
-    if (token.type != 'eof') emittedTokens.push({ pos, token })
+    // intercept the lexer to pull out the token stream
+    if (_saveEmittedTokens && token.type != 'eof') _emittedTokens.push({ pos, token })
 
     const start = search(/(\s|\/\/[^\r\n]*|\/\*[\s\S]*?\*\/)*/y, pos)
     if (start == str.length) return (token = { type: 'eof' })
