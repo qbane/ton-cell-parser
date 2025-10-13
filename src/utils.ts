@@ -1,6 +1,6 @@
 import { Cell } from '@ton/core'
 
-export function stringToCell(str: string, CellClass: typeof Cell = Cell) {
+export function stringToCell(str: string, CellClass: typeof Cell = Cell): InstanceType<typeof CellClass> {
   let isHex = false
   if (str.startsWith('0x')) {
     isHex = true

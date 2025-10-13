@@ -34,7 +34,7 @@ class FormatStringParseError extends Error {
   }
 }
 
-export function parseFormatString(str: string) {
+export function parseFormatString(str: string): FieldDesc[] {
   let pos = 0
   let token: Token = { type: 'eof' }
 

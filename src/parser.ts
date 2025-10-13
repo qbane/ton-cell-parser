@@ -8,7 +8,7 @@ import { stringToCell } from './utils'
 export class Parser<ParserOutput extends unknown[]> {
   constructor(readonly fields: FieldDesc[]) {}
 
-  unpack(input: string | Uint8Array) {
+  unpack(input: string | Uint8Array): UnpackResult<ParserOutput> {
     let cell: Cell
     if (typeof input === 'string') {
       cell = stringToCell(input)
@@ -21,7 +21,7 @@ export class Parser<ParserOutput extends unknown[]> {
     return decodeSlice(cell.beginParse(), this.fields as any) as UnpackResult<ParserOutput>
   }
 
-  static create<T extends string>(source: T) {
+  static create<T extends string>(source: T): Parser<string extends T ? unknown[] : Infer<T>> {
     return new Parser<string extends T ? unknown[] : Infer<T>>(parseFormatString(source))
   }
 }
