@@ -1,0 +1,21 @@
+name: Publish to jsr
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup deno
+      uses: denoland/setup-deno@v2
+      with:
+        deno-version: v2.x
+        cache: true
+    - name: Run deno install
+      run: deno install
+    - name: Publish package
+      run: npx jsr publish --allow-slow-types --allow-dirty
