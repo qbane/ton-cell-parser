@@ -1,11 +1,11 @@
-name: Publish to jsr
+name: Publish to npm
 on:
   workflow_dispatch:
     inputs:
       publishCommandArgs:
-        description: 'Extra command arguments to pass to jsr publish'
+        description: 'Extra command arguments to pass to npm publish'
         type: string
-        default: '--allow-slow-types'
+        default: '--tag latest'
 
 jobs:
   publish:
@@ -20,9 +20,13 @@ jobs:
       with:
         node-version: 22.x
         cache: npm
+    - name: Update npm
+      run: |
+        npm --version
+        npm install -g npm@11
     - name: Install dependencies
       run: npm ci
     - name: Build
       run: npm run build
     - name: Publish package
-      run: npx jsr publish ${{ inputs.publishCommandArgs }}
+      run: npm publish --access public ${{ inputs.publishCommandArgs }}
