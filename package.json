@@ -6,6 +6,10 @@
     "name": "qbane",
     "email": "andy0130tw@yahoo.com.tw"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qbane/ton-cell-parser.git"
+  },
   "main": "dist/index.umd.cjs",
   "module": "dist/index.js",
   "types": "src/types.d.ts",
