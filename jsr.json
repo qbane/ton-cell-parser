@@ -1,8 +1,17 @@
 {
   "name": "@qbane/ton-cell-parser",
-  "version": "0.0.3",
+  "version": "0.0.3-jsr",
   "license": "MIT",
+  "publish": {
+    "include": [
+      "README.md",
+      "CHANGELOG.md",
+      "LICENSE",
+      "package.json",
+      "src/**/*.ts"
+    ]
+  },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index-jsr.ts"
   }
 }

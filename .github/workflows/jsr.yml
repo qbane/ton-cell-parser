@@ -6,6 +6,7 @@ on:
         description: 'Extra command arguments to pass to jsr publish'
         type: string
         default: '--allow-slow-types'
+        required: false
 
 jobs:
   publish:
